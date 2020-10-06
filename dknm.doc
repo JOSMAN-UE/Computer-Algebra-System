@@ -1,0 +1,106 @@
+
+
+
+/*** DKNM.C ******/
+
+
+PNUM DKFEnm(int pn,int pm)
+{
+PNUM expa,tem;
+LNUM can,cin,cfi,cpas;
+LNUM tcum,rnum;
+int n,rn,m,rm;
+
+n=pn;rn=n-1;m=pm;rm=m-1;
+if(n<1)return 0;
+if(m<1)return 0;
+if(m>=n)return 0;
+
+if(RTU[rm])
+  {
+  cfi=DKpot(rm+1)-1;
+  cin=cfi;cpas=2;
+  }
+else
+  {
+  cin=DKpot(rm)+1;cfi=DKpot(rm+1)-1;
+  cpas=PW2[RUD[rm]];
+  while((cin%cpas) NE (cpas-1))cin+=2;
+  }
+
+expa=0;tem=0;
+for(can=cin;can<=cfi;can+=cpas)
+  {
+  for(int r=rm;r>1;r--)
+    {
+    if((can&PW2[r]) NE 0)
+      {
+      can=can|RN[r];
+      if(r>1 AND r%2 EQ 1)r--;
+      }
+    }
+  tem++;
+  rnum=can|PW2[rn];
+  tcum=rnum|RN[rn];
+  if(tcum EQ rnum)expa++;
+  }
+
+return expa;
+}
+
+
+PNUM DKFEn(int pn)
+{
+int n;
+PNUM v,s;
+
+n=pn;
+if     (n EQ 1)return 2;
+else if(n EQ 2)return 1;
+else if(n EQ 3)return 2;
+else if(n EQ 4)return 1;
+
+DKgen(n);
+printf(" %dR ",n);
+s=0;
+for(int m= (n-1);m>=(1);m--)
+  {
+  v=DKFEnm(n,m);
+  if(v EQ 0)break;
+  s+=v;
+  printf(" %d",v);
+  }
+printf(" %d %d ",n,s);
+return s;
+}
+
+
+BNUM DKfunF(int pn)
+{
+BNUM v;
+int n;
+
+n=pn;v=0;
+for(int i=1;i<=n;i++)
+  {
+  v+=DKFEn(i);
+  }
+printf("F(%d)=%I64d, \n",n,v);
+
+return v;
+}
+
+
+void NMdemo(void)
+{
+PNUM v,n;
+
+n=4;v=6;
+while(n NE 64)
+  {
+  kbhit();
+  n++;v+=DKFEn(n);
+  printf(" %d %d \n",n,v);
+  }
+}
+
